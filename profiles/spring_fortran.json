@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "id": "spring_fortran",
+  "label": "弹簧示例 · Fortran编译计算",
+  "description": "实际ifort编译独立弹簧Fortran程序，验证参数到FOR独立运行与结果显示；不是Abaqus UEL或电池验证。",
+  "mode": "offline",
+  "parent_root": "../examples/spring",
+  "source": "spring.f90",
+  "inp": "template.inp",
+  "includes": [
+    "driver.py",
+    "parameters.dat",
+    "compile_spring.py"
+  ],
+  "files": {
+    "spring.f90": "5b00e1da1d39bd989c1bbf9b9bdf3dcdbf9d6128ef276f9b74aa9df8da32ec8b",
+    "template.inp": "ba51b548cff88b1e1d37379c7396ceaf2992f6dc2a6c4efabd407af553d47a8f",
+    "driver.py": "74328e7e604e51c5132268359499f8a9ee8995dae298cbeeec3ab4562b49a04b",
+    "parameters.dat": "065d014b473e60dba7f54eba1a7ec163315cf5da0f87c4766d8d09e16d53b7e1",
+    "compile_spring.py": "71a9b24a5590737f3250c8320e287a8faf4a5a4caaf8c5c8f6ce4287ca9d7c66"
+  },
+  "canonical": "../examples/spring/spring.f90",
+  "parameters": {
+    "stiffness_N_m": {
+      "label": "弹簧刚度",
+      "unit": "N/m",
+      "default": 1000.0,
+      "type": "float",
+      "minimum": 1e-12,
+      "maximum": 1000000000000.0
+    },
+    "initial_displacement_mm": {
+      "label": "初始位移",
+      "unit": "mm",
+      "default": 0.0,
+      "type": "float",
+      "minimum": -100.0,
+      "maximum": 100.0
+    },
+    "displacement_mm": {
+      "label": "终点位移",
+      "unit": "mm",
+      "default": 1.0,
+      "type": "float",
+      "minimum": -100.0,
+      "maximum": 100.0
+    },
+    "duration_s": {
+      "label": "加载时间",
+      "unit": "s",
+      "default": 10.0,
+      "type": "float",
+      "minimum": 1e-09,
+      "maximum": 1000000.0
+    },
+    "steps": {
+      "label": "输出步数",
+      "unit": "1",
+      "default": 50,
+      "type": "int",
+      "minimum": 2,
+      "maximum": 1000
+    }
+  },
+  "bindings": [
+    {
+      "file": "parameters.dat",
+      "token": "{{stiffness_N_m}}",
+      "value": "stiffness_N_m"
+    },
+    {
+      "file": "parameters.dat",
+      "token": "{{initial_displacement_mm}}",
+      "value": "initial_displacement_mm"
+    },
+    {
+      "file": "parameters.dat",
+      "token": "{{displacement_mm}}",
+      "value": "displacement_mm"
+    },
+    {
+      "file": "parameters.dat",
+      "token": "{{duration_s}}",
+      "value": "duration_s"
+    },
+    {
+      "file": "parameters.dat",
+      "token": "{{steps}}",
+      "value": "steps"
+    }
+  ],
+  "initializer": {
+    "kind": "spring_demo"
+  },
+  "hypothesis": "The frozen spring algorithm reads named parameters from the new external file.",
+  "expected_observation": "The requested loading history is generated and the spring tangent relative error is at most 1e-5.",
+  "stop_condition": "Any nonzero process, missing output or failed declared check.",
+  "execution": {
+    "enabled": true,
+    "steps": [
+      {
+        "id": "compile_spring",
+        "kind": "command",
+        "argv": [
+          "{python}",
+          "compile_spring.py"
+        ],
+        "timeout_seconds": 60,
+        "expected_files": [
+          "spring.exe"
+        ],
+        "role": "compile",
+        "label": "编译 Fortran 源码"
+      },
+      {
+        "id": "run_spring",
+        "kind": "command",
+        "argv": [
+          "{work}/spring.exe"
+        ],
+        "timeout_seconds": 60,
+        "expected_files": [
+          "history.csv",
+          "metrics.csv"
+        ],
+        "role": "run",
+        "label": "运行已编译单元"
+      }
+    ],
+    "assertions": [
+      {
+        "id": "spring_tangent",
+        "gate": "tangent",
+        "kind": "csv",
+        "file": "metrics.csv",
+        "column": "relative_tangent_error",
+        "aggregate": "max_abs",
+        "op": "le",
+        "expected": 1e-05
+      },
+      {
+        "id": "history_count",
+        "kind": "csv",
+        "file": "history.csv",
+        "aggregate": "count",
+        "op": "ge",
+        "expected": 3
+      }
+    ],
+    "scope": {
+      "paper": "paper1",
+      "element_families": [
+        "offline_demo_spring"
+      ],
+      "active_physics": [
+        "1D elastic spring demonstration only"
+      ],
+      "state_variables": [
+        {
+          "name": "u",
+          "kind": "primary",
+          "owner": "bulk",
+          "role": "Elastic stored energy E=0.5*k*u^2;no dissipation."
+        }
+      ],
+      "residual_rows": [
+        "spring force"
+      ],
+      "tangent_columns": [
+        "displacement"
+      ],
+      "property_delta": "explicit external parameters only",
+      "source_delta": "byte-identical algorithm",
+      "predecessor_gate": {
+        "not_required": true,
+        "reason": "Offline spring workflow demonstration;no battery or Abaqus solve."
+      }
+    },
+    "required_gates": []
+  },
+  "visualization": {
+    "file": "history.csv",
+    "x": "time_s",
+    "series": [
+      {
+        "column": "force_N",
+        "label": "力",
+        "unit": "N"
+      },
+      {
+        "column": "displacement_mm",
+        "label": "位移",
+        "unit": "mm"
+      },
+      {
+        "column": "energy_J",
+        "label": "弹性能",
+        "unit": "J"
+      }
+    ]
+  },
+  "actions": {
+    "all": [
+      "compile_spring",
+      "run_spring"
+    ],
+    "compile": [
+      "compile_spring"
+    ],
+    "run": [
+      "run_spring"
+    ]
+  }
+}

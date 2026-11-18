@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "root": ".",
+  "findings": [],
+  "files_scanned": 66,
+  "history_scope": "Git history is not included in this directory audit. Use --git-root for the separate history check."
+}

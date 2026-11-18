@@ -1,0 +1,13 @@
+__pycache__/
+.pytest_cache/
+abaqus_plugin/prime_uel_plugin_config.json
+cae_exports/
+*.pyc
+local/
+*.egg-info/
+build/
+dist/
+.venv/
+*.exe
+*.obj
+*.mod

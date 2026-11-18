@@ -1,0 +1,6 @@
+PRIME UEL Studio
+Copyright 2026 PRIME UEL Studio contributors
+
+This public package contains workflow and model-preparation code. Abaqus,
+compiler toolchains, third-party Python packages and the private PRIME Core
+solver are separate components with their own licenses and distribution terms.

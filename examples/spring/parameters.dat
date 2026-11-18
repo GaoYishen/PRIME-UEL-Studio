@@ -1,0 +1,5 @@
+{{stiffness_N_m}}
+{{initial_displacement_mm}}
+{{displacement_mm}}
+{{duration_s}}
+{{steps}}

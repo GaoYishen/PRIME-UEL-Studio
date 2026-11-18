@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prime-uel-studio"
+version = "0.8.0+public"
+description = "Native desktop configuration and execution adapters for Abaqus UEL"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+a5-diagnostics = ["numpy"]
+
+[project.scripts]
+prime-uel-studio = "prime_studio.gui:main"
+
+[tool.setuptools.packages.find]
+where = [".", "backend"]
+include = ["prime_studio*", "uel_lab*"]

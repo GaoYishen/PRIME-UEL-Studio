@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "status": "GENERATED_TOPOLOGY_ONLY",
+  "interface_kind": "2D_T3_REACTION_EDGE_BATCH",
+  "source_inp": "multiphase_t3.inp",
+  "source_inp_sha256": "5b88e45140e56bf85482f679169abaa96b620b2083ada2eacc34f33bf551ba65",
+  "generated_inp": "multiphase_t3.inp",
+  "generated_inp_sha256": "17a341ee9699a741f0ba1bed9becae8c58462e0c16d1032cceb33d27603f76d0",
+  "selected_parent_elements": [
+    101,
+    102,
+    201,
+    202
+  ],
+  "phase_selection": {
+    "solid": [
+      101,
+      102
+    ],
+    "liquid": [
+      201,
+      202
+    ]
+  },
+  "interface_count": 2,
+  "interface_elements": [
+    {
+      "label": 203,
+      "type": "U2",
+      "elset": "PRIME_REACTION_EDGE",
+      "connectivity": [
+        2,
+        3,
+        1,
+        5
+      ],
+      "parent_elements": [
+        101,
+        201
+      ],
+      "shared_edge": [
+        2,
+        3
+      ],
+      "opposite_nodes": {
+        "left": 1,
+        "right": 5
+      },
+      "normal_from_left_edge": [
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "label": 204,
+      "type": "U2",
+      "elset": "PRIME_REACTION_EDGE",
+      "connectivity": [
+        3,
+        8,
+        4,
+        6
+      ],
+      "parent_elements": [
+        102,
+        202
+      ],
+      "shared_edge": [
+        3,
+        8
+      ],
+      "opposite_nodes": {
+        "left": 4,
+        "right": 6
+      },
+      "normal_from_left_edge": [
+        -1.0,
+        0.0
+      ]
+    }
+  ],
+  "node_policy": "shared",
+  "property_status": "PRIVATE_ADAPTER_REQUIRED",
+  "checks": {
+    "selected_parent_count": 4,
+    "adjacent_pair_count": 2,
+    "unique_interface_labels": true,
+    "source_unchanged": true
+  },
+  "next_step": "Attach the authorized PRIME UEL property contract and run Abaqus datacheck on this new copy."
+}

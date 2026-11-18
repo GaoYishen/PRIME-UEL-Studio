@@ -1,0 +1,21 @@
+** Public multiphase cross-phase fixture. Two solid T3 elements and two liquid T3 elements share two interface edges.
+*NODE
+1, 0., 0.
+2, 1., 0.
+3, 1., 1.
+4, 0., 1.
+5, 2., 0.
+6, 2., 1.
+7, 0., 2.
+8, 1., 2.
+9, 2., 2.
+*ELEMENT, TYPE=CPE3, ELSET=SOLID_PHASE
+101, 1, 2, 3
+102, 4, 3, 8
+*ELEMENT, TYPE=CPE3, ELSET=LIQUID_PHASE
+201, 2, 5, 3
+202, 3, 6, 8
+*ELEMENT, TYPE=U2, ELSET=PRIME_REACTION_EDGE
+203, 2, 3, 1, 5
+204, 3, 8, 4, 6
+*END STEP
